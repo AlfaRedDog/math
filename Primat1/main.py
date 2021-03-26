@@ -1,9 +1,10 @@
 import math
-#from Aalg import dichotomy
 CONST_GOLDEN_RATIO = (1 + math.sqrt(5))/2
 
 def dichotomy(a, b, absac):
+    iterations = 0
     while((b - a) / 2 > absac):
+        iterations = iterations + 2
         c = (a + b) / 2
         c1 = c - absac / 2
         c2 = c + absac / 2
@@ -11,17 +12,21 @@ def dichotomy(a, b, absac):
             a = c1
         else:
             b = c2
+    print(iterations)
     return (a + b) / 2
 def golden_section(a, b, absac):
+    iterations = 0
     while((b - a) / 2 > absac):
         x1 = b - (b - a) / CONST_GOLDEN_RATIO
         f_x1 = function(x1)
         x2 = a + (b - a) / CONST_GOLDEN_RATIO
         f_x2 = function(x2)
+        iterations = iterations + 2
         if (f_x1 >= f_x2):
             a = x1
         else:
             b = x2
+    print(iterations)
     return (a+b)/2
 def parabola(a, b, absac):
     prev_x = a
@@ -31,16 +36,22 @@ def parabola(a, b, absac):
     f_x1 = function(x1)
     f_x2 = function(x2)
     f_x3 = function(x3)
+    iterations = 3
     while(True):
         if(x3 == x1 or x2 == x1 or x3 == x2):
+            print(iterations)
             return x2
         a1 = (f_x2 - f_x1) / (x2 - x1)
         a2 = ((f_x3 - f_x1) / (x3 - x1) - (f_x2 - f_x1) / (x2 - x1)) / (x3 - x2)
         if(a1 == a2):
+            print(iterations)
             return x2
         x = (x1 + x2 - (a1 / a2)) / 2
         f_x = function(x)
+        iterations = iterations + 1
+
         if(abs(x - prev_x) <= absac):
+            print(iterations)
             return x
         if(x < x2):
             if(f_x >= f_x2):
@@ -61,16 +72,43 @@ def parabola(a, b, absac):
                 x2 = x
                 f_x2 = f_x
         prev_x = x
+
+def golden_section2(a, b, absac):
+    left = True
+    x1 = a + (b - a) / CONST_GOLDEN_RATIO
+    f_x1 = function(x1)
+    iterations = 1
+    while((b - a) / 2 > absac):
+        if(left):
+            x2 = x1
+            f_x2 = f_x1
+            x1 = b - (b - a) / CONST_GOLDEN_RATIO
+            f_x1 = function(x1)
+        else:
+            x1 = x2
+            f_x1 = f_x2
+            x2 = a + (b - a) / CONST_GOLDEN_RATIO
+            f_x2 = function(x2)
+        iterations = iterations + 1
+        if(f_x1 > f_x2):
+            a = x1
+            left = False
+        else:
+            b = x2
+            left = True
+    print(iterations)
+    return (a + b) / 2
 def fibonacci(a, b, absac):
     ch = []
     ch.append(1)
     ch.append(1)
     k = 1
-    print(int((b-a)/absac))
-    for n in range(1, int((b - a) / absac)):
-        ch.append(ch[n] + ch[n-1])
-        #print(ch[n])
-        k = k + 1
+    while(True):
+        if(ch[k] <= int((b-a) / absac)):
+            ch.append(ch[k]+ch[k-1])
+            k = k + 1
+        else:
+            break
     x1 = a + (ch[k-2] / ch[k]) * (b - a)
     f_x1 = function(x1)
     y1 = a + (ch[k-1] / ch[k]) * (b - a)
@@ -93,8 +131,6 @@ def fibonacci(a, b, absac):
         else:
             b = y1
         return (a + b) / 2
-
-
 def brent1(a, b, absac):
     x = (a + b) / 2
     w = (a + b) / 2
@@ -165,7 +201,8 @@ def function(x):
 
 absac = 10e-10
 print(dichotomy(absac, math.pi * 2 - absac, absac))
-print(golden_section(absac, math.pi*2 - absac, absac))
+#print(golden_section(absac, math.pi*2 - absac, absac))
+print(golden_section2(absac, math.pi*2 - absac, absac))
 print(brent1(absac, math.pi * 2 - absac, absac))
 print(parabola(absac, math.pi * 2 - absac, absac))
 print(fibonacci(absac, math.pi * 2 - absac, absac))
